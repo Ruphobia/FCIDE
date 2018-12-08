@@ -5,19 +5,12 @@ unit fcideMain;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, SynEdit, SynHighlighterPython, SynHighlighterPas,
-  Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls, Buttons, StdCtrls,
-  ECTabCtrl, ECSpinCtrls, ECSlider, Types,SynEditHighlighter;
+  Classes, SysUtils, FileUtil,Forms, Controls, Graphics, Dialogs,
+  ExtCtrls, ComCtrls, Buttons, StdCtrls,ECTabCtrl,idewindows,newprojectdialog,
+  filemanager;
 
 type
-
   { TForm1 }
-  TEditors = record
-    editorID : integer;
-    editor : TSynEdit;
-    highlighter : TSynCustomHighlighter;
-  end;
-
   TForm1 = class(TForm)
     ComboBox1: TComboBox;
     doublepane: TBitBtn;
@@ -62,6 +55,7 @@ type
       var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure NewFileClick(Sender: TObject);
+    procedure NewProjectClick(Sender: TObject);
     procedure projectviewClick(Sender: TObject);
   private
 
@@ -73,7 +67,7 @@ type
 
 var
   Form1: TForm1;
-  Editors : array of TEditors;
+  //Editors : array of TEditors;
 
 const
   hPython = 0;
@@ -90,38 +84,38 @@ procedure HideAllEditors;
 var
   index : integer;
 begin
-  if length(Editors) > 0 then
-  begin
-    for index := 0 to length(Editors) -1 do
-      Editors[index].editor.Visible := false;
-  end;
+//  if length(Editors) > 0 then
+//  begin
+//    for index := 0 to length(Editors) -1 do
+//      Editors[index].editor.Visible := false;
+//  end;
 end;
 
 procedure ShowByID(editorID : integer);
 var
   index : integer;
 begin
-  if (length(Editors) > 0) then
-  begin
-    for index := 0 to length(Editors) -1 do
-      begin
-        if (Editors[index].editorID = editorID) then
-        begin
-          form1.memo1.lines.add('hide');
-          HideAllEditors;
-          form1.memo1.lines.add('set visible');
-          Editors[index].editor.Visible:=true;
-          exit;
-        end;
-      end;
-  end;
+//  if (length(Editors) > 0) then
+//  begin
+//    for index := 0 to length(Editors) -1 do
+//      begin
+//        if (Editors[index].editorID = editorID) then
+//        begin
+//          form1.memo1.lines.add('hide');
+//          HideAllEditors;
+//          form1.memo1.lines.add('set visible');
+//          Editors[index].editor.Visible:=true;
+//          exit;
+//        end;
+//      end;
+//  end;
 
 end;
 
 function CreateNewEditor:integer;
 begin
-  setlength(Editors,length(Editors)+1);
-  result := length(Editors) -1;
+//  setlength(Editors,length(Editors)+1);
+//  result := length(Editors) -1;
 end;
 
 procedure CreateNewIDE(pc : TWinControl; pg : TECTabCtrl; fname : string; lType : integer);
@@ -140,16 +134,16 @@ begin
   HideAllEditors;
   index := CreateNewEditor;
 
-  Editors[index].editorID := tc.id;
-  Editors[index].editor := TSynEdit.Create(pc);
-  Editors[index].editor.Parent := pc;
-  Editors[index].editor.Align := alClient;
-  case (lType) of
-    hPython: begin
-      Editors[index].highlighter := TSynPythonSyn.Create(Editors[index].editor);
-      Editors[index].editor.Highlighter := Editors[index].highlighter;
-    end;
-  end;
+  //Editors[index].editorID := tc.id;
+  //Editors[index].editor := TSynEdit.Create(pc);
+  //Editors[index].editor.Parent := pc;
+  //Editors[index].editor.Align := alClient;
+  //case (lType) of
+  //  hPython: begin
+  //    Editors[index].highlighter := TSynPythonSyn.Create(Editors[index].editor);
+  //    Editors[index].editor.Highlighter := Editors[index].highlighter;
+  //  end;
+  //end;
 end;
 
 
@@ -157,6 +151,20 @@ procedure TForm1.NewFileClick(Sender: TObject);
 begin
   //CreateNewIDE(idewindow,ECTabCtrl1,'test.py',0);
 end;
+
+procedure TForm1.NewProjectClick(Sender: TObject);
+var
+  s : string;
+begin
+  newprojectdialogwindow.ShowModal;
+  memo1.lines.add('Done');
+  s := filemanager.getprojectname;
+  if (length(s)>0) then
+    Form1.Caption:='FC IDE - ' + s
+  else
+    Form1.Caption:='FC IDE';
+end;
+
 
 //deal with showing and hiding the project view
 procedure TForm1.projectviewClick(Sender: TObject);
@@ -190,7 +198,7 @@ var
   pg : TECTabCtrl;
   tc : TECTab;
   index : integer;
-  newEditors : array of TEditors;
+  //newEditors : array of TEditors;
 begin
   //get the page control so we can gain access to the tab
   pg := TECTabCtrl(Sender);
@@ -198,26 +206,26 @@ begin
   tc := pg.Tabs.Items[AIndex];
   //loop through our array of editors to find the matching id
   //if we find the id, we delete the editor and remove it from the list
-  for index := 0 to length(Editors) -1 do
-    begin
-      //check for matching id
-      if Editors[index].editorID = tc.id then
-      begin
-        //destroy the editor control
-        Editors[index].editor.Destroy;
-      end
-      else
-      begin
+ // for index := 0 to length(Editors) -1 do
+//    begin
+//      //check for matching id
+//      if Editors[index].editorID = tc.id then
+//      begin
+//        //destroy the editor control
+//        Editors[index].editor.Destroy;
+//      end
+//      else
+//      begin
         //these are the ones we want to keep, so we
         //copy them into a temp location
-        setlength(newEditors,length(newEditors)+1);
-        newEditors[length(newEditors)-1] := Editors[index];
-      end;
-    end;
+//        setlength(newEditors,length(newEditors)+1);
+//        newEditors[length(newEditors)-1] := Editors[index];
+//      end;
+//    end;
   //now we can clear out the old list
   //and re-create it with the one deleted entry missing
-  setlength(Editors,0);
-  Editors := newEditors;
+//  setlength(Editors,0);
+//  Editors := newEditors;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);

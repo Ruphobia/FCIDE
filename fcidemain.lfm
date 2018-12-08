@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 283
+  Left = 423
   Height = 513
-  Top = 161
+  Top = 185
   Width = 696
   Caption = 'FC IDE'
   ClientHeight = 513
@@ -210,6 +210,7 @@ object Form1: TForm1
         00000000000000000000000000000000000300000087000000EE000000F00000
         008F000000050000000000000000000000000000000000000000
       }
+      OnClick = NewProjectClick
       ParentShowHint = False
       ShowHint = True
       TabOrder = 3
